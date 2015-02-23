@@ -26,7 +26,7 @@ def test_part2_withUTF():
 def test_part3_getFeatures():
 	'''Test for part 3 of pipeline. 
         Extract features from JSON file and Create a feature vectors for each instance'''
-        expectedX=[[0,616,294.1380208333333,0]]
+        expectedX=[[0,616,294.1380208333333,0,3,5,4,4]]
 	expectedY=[False]
 	actualX, actualY = pipeline.getFeatures(outFileName)
         assert_equal(expectedX,actualX)

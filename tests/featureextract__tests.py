@@ -23,3 +23,29 @@ def testStatus():
     assert_equal(featObj.statusKarma,-56)
     assert_equal(featObj.statusAccAge,1.0000)
     assert_equal(featObj.statusPrevAct,1)
+	
+def testNarratives():
+    test_text = "Hi I am in need of food for my 4 children we are a military family that has really hit hard times and we have exahusted all means of help just to be able to feed my family and make it through another night is all i ask i know our blessing is coming so whatever u can find in your heart to give is greatly appreciated"
+  
+    featObj = featureextract.FeatureExtract()
+    featObj.identifyNarratives(test_text)
+    assert_equal(featObj.narrativeCountMoney1,0)
+    assert_equal(featObj.narrativeCountMoney2,2)
+    assert_equal(featObj.narrativeCountJob,0)
+    assert_equal(featObj.narrativeCountFamily,3)
+
+def testReciprocity():
+    testRecipro_text = " hi, i will pay it forward and return the favor wich will be doing reciprocity"
+    
+    featObj = featureextract.FeatureExtract()
+    featObj.identifyReciprocity(testRecipro_text)
+    assert_equal(featObj.findReciprocity,0)
+
+def testWordCount() :
+    '''test wordcount'''
+    testTokens = ['there','are','four','words']
+    featObj.countWord(testTokens)
+    assert_equal(featObj.wordNum, 4)
+
+
+

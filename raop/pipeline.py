@@ -84,6 +84,13 @@ def getFeatures(inputJSONfile):
 	temp_feat.append(featObj.statusKarma)
 	temp_feat.append(featObj.statusAccAge)
 	temp_feat.append(featObj.statusPrevAct)
+    	temp_feat.append(featObj.narrativeCountMoney1)
+    	temp_feat.append(featObj.narrativeCountMoney2)
+    	temp_feat.append(featObj.narrativeCountJob)
+    	temp_feat.append(featObj.narrativeCountFamily)
+    	temp_feat.append(featObj.findReciprocity)
+    	temp_feat.append(featObj.wordNum)
+    	
 	X_set.append(temp_feat)
 	Y_set.append(dict["requester_received_pizza"])
     #TO DO:Normalisation/Vectorization
