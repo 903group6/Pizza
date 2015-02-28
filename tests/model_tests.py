@@ -3,6 +3,7 @@ import raop.model.ml as model
 from sklearn import datasets
 from sklearn import svm
 from sklearn.externals import joblib
+import numpy as np
 
 iris_testdata = datasets.load_iris()
 X_set, Y_set = iris_testdata.data, iris_testdata.target
@@ -25,4 +26,14 @@ def crossValidate_test():
     modelObj.crossValidate()
     assert_equal((expected_results == modelObj.cv_accuracy).all(), True)
  
+def eval_test():
+    evalOutput = '             precision    recall  f1-score   support\n\n      False       0.67      1.00      0.80         2\n       True       1.00      0.50      0.67         2\n\navg / total       0.83      0.75      0.73         4\n'	
+    expectedConfMatrix = np.array([[2,0],[1,1]])
+    y_true = [True,True,False,False]
+    y_pred = [True,False,False,False]
+    modelObj = model.MLmodel(None,None,y_true)
+    modelObj.evaluationResult(y_pred)
+
+    assert_equal(modelObj.evalResult, evalOutput)
+    assert_equal((modelObj.confusionMatrix==expectedConfMatrix).all(),True)
 

@@ -11,9 +11,7 @@ class MLmodel(object):
     '''
     def __init__(self, ml_algorithm,X_set,Y_set):
         self.confusionMatrix = None
-        self.precision = None
-        self.recall = None
-        self.f1 = None
+        self.evalResult = None
         self.cv_accuracy = None
         self.ml_algorithm = ml_algorithm
         self.modelFileName = None
@@ -30,10 +28,11 @@ class MLmodel(object):
          '''10-Fold Cross Validation'''
          self.cv_accuracy = cross_validation.cross_val_score(\
          self.ml_algorithm, self.X_set, self.Y_set, cv=10)
-       
+         
 
     
-    def evaluationResult(self):
-        return 0
-
+    def evaluationResult(self,y_pred):
+	self.evalResult = classification_report(self.Y_set,y_pred)
+        self.confusionMatrix = confusion_matrix(self.Y_set,y_pred)
+       
   
