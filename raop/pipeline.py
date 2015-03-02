@@ -56,7 +56,6 @@ def addPreprocessedKeyVals(inputJSONfile,outputJSONfile):
 		dict["added_tokens"] = preProcObj.tokenizedText
 		dict["added_POStags"] = preProcObj.POS_TaggedText
 		dict["added_normalised_text"] = preProcObj.normalisedText
-                #dict["unix_timestamp_of_request"] = preProcObj.normalisedText
 		#print count
 		#count += 1
 	helper.dumpJSONtoFile(outputJSONfile, list)
