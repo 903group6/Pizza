@@ -1,6 +1,7 @@
 import raop.helper as helper
 import raop.preprocess.preprocess as preproc
 import raop.featureextract.featureextract as featureextract
+import nltk
 
 #Step 1	- Remove desired keys from each dictionary
 def removeNonNeededKeys(inputJSONfile,outputJSONfile):
@@ -41,7 +42,7 @@ def addPreprocessedKeyVals(inputJSONfile,outputJSONfile):
 	Then creates new key value pairs with these processed fields
 	usage: addPreprocessedKeyVals("resources/1-train-fields-removed.json","resources/2-train-preprocessed-keys-added.json")'''
 	list = helper.loadJSONfromFile(inputJSONfile)
-	count = 1
+	#count = 1
 	for dict in list:
 		preProcObj = preproc.Preprocess()
 		preProcObj.setDictionary(dict)
@@ -55,8 +56,9 @@ def addPreprocessedKeyVals(inputJSONfile,outputJSONfile):
 		dict["added_tokens"] = preProcObj.tokenizedText
 		dict["added_POStags"] = preProcObj.POS_TaggedText
 		dict["added_normalised_text"] = preProcObj.normalisedText
-		print count
-		count += 1
+                #dict["unix_timestamp_of_request"] = preProcObj.normalisedText
+		#print count
+		#count += 1
 	helper.dumpJSONtoFile(outputJSONfile, list)
 
 
@@ -69,11 +71,13 @@ def getFeatures(inputJSONfile):
        and keep it in a feature vector. Once feature extraction is completed,
        normalise the feature vectors.
        '''
-    list = helper.loadJSONfromFile(inputJSONfile)
+    thelist = helper.loadJSONfromFile(inputJSONfile)
     featObj = featureextract.FeatureExtract()
     X_set = []
     Y_set = []
-    for dict in list:
+    featObj.getMinTime(thelist)
+
+    for dict in thelist:
         temp_feat = []
         featObj.findEvidence(dict["added_Title_+_Request"])
         featObj.evalStatus(dict["requester_upvotes_minus_downvotes_at_request"],\
@@ -89,11 +93,17 @@ def getFeatures(inputJSONfile):
         temp_feat.append(featObj.narrativeCountMoney2)
         temp_feat.append(featObj.narrativeCountJob)
         temp_feat.append(featObj.narrativeCountFamily)
-				#TODO: Add Kevin's reciprocity/word count and Bianca's Time Stuff
-        #temp_feat.append(featObj.findReciprocity)
-        #print temp_feat
-        #temp_feat.append(featObj.wordNum)
-        #print temp_feat
+         
+        featObj.identifyReciprocity(dict["added_Title_+_Request"])
+        featObj.countWord(dict["added_tokens"])
+        temp_feat.append(featObj.findReciprocity)
+        temp_feat.append(featObj.wordNum)
+        featObj.getTime(dict["unix_timestamp_of_request"])
+        featObj.getFirstHalf(dict["unix_timestamp_of_request"])
+        temp_feat.append(featObj.time)
+        print featObj.time
+        temp_feat.append(featObj.firstHalf)
+        print featObj.firstHalf
         X_set.append(temp_feat)
         Y_set.append(dict["requester_received_pizza"])
     #TO DO:Normalisation/Vectorization

@@ -48,3 +48,20 @@ def testWordCount() :
     featObj = featureextract.FeatureExtract()
     featObj.countWord(testTokens)
     assert_equal(featObj.wordNum, 4)
+
+def testTime() :
+    '''test time'''
+    testInput=1317852607.0
+    featObj = featureextract.FeatureExtract()
+    featObj.getMinTime([{"unix_timestamp_of_request":1317852607.0}])
+    featObj.getTime(testInput)
+    assert_equal(featObj.time, 1317852607.0-featObj.minTime)
+
+def testfirstHalf():
+    '''first half'''
+    testInput=1317852607.0
+    featObj = featureextract.FeatureExtract()
+    featObj.getFirstHalf(testInput)
+    assert_equal(featObj.firstHalf,1)
+
+
