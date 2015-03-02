@@ -100,9 +100,7 @@ def getFeatures(inputJSONfile):
         featObj.getTime(dict["unix_timestamp_of_request"])
         featObj.getFirstHalf(dict["unix_timestamp_of_request"])
         temp_feat.append(featObj.time)
-        print featObj.time
         temp_feat.append(featObj.firstHalf)
-        print featObj.firstHalf
         X_set.append(temp_feat)
         Y_set.append(dict["requester_received_pizza"])
     #TO DO:Normalisation/Vectorization
