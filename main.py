@@ -20,26 +20,41 @@ modelName = "GaussianNaiveBayes"
 directoryName = "GaussianNaiveBayes"
 description = "Steven Zimmerman - March 3rd 2015 - Gaussian Naive Bayes"
 
-#create model & metrics  TODO:add precision/recall/F1
+#create model & cross-valid metrics  
 modelObj = model.MLmodel(classifier, features, pizzas)
 modelObj.crossValidate()
 cvStats = modelObj.cv_accuracy
 cvStats = cvStats.tolist()
 modelObj.fitModel()
 
+#Create model predictions & calculate precision/recall/F1
+y_preds = modelObj.model.predict(features)
+modelObj.evaluationResult(y_preds)
+
 #output model to directory
 dirPath = modelOutpath + directoryName
 if not os.path.exists(dirPath):
     os.makedirs(dirPath)
     
-
 fullOutPath = dirPath + '/' + modelName
 modelObj.saveModel(fullOutPath)
+
+
 
 #####save report to directory#####
 reportFile = fullOutPath + '.report'
 oFile = open(reportFile,'w')
 
+#report information
+oFile.write('Model Name: ' + modelName + '\n')
+oFile.write('Model Description: ' + description + '\n')
+oFile.write('Model Feautures: ' + 'BASELINE FEATURES' + '\n\n')
+
+#prec/recall/f-1
+oFile.write('Model Evaluation Metrics\n')
+oFile.write('----------------------\n\n')
+oFile.write(modelObj.evalResult)
+oFile.write('\n\n----------------------\n\n')
 
 #cross-valid stats
 oFile.write('Cross Validation Stats\n')
@@ -56,3 +71,5 @@ oFile.write("Average = " + str(foldTotal/(i-1)))
 
 
 oFile.close()
+
+

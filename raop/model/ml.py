@@ -6,6 +6,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.externals import joblib
 
 class MLmodel(object):
+    #TODO: Docstring for class
     '''
  
     '''
@@ -20,20 +21,23 @@ class MLmodel(object):
         self.Y_set = Y_set
 
     def saveModel(self, filename):
+        '''Save model as binary files, these files will be necessary
+        for future predictions on unseen data'''
         joblib.dump(self.model,filename)
 
-    #def cvResult(self):
-        #return 0
 
     def crossValidate(self):
-         '''10-Fold Cross Validation'''
+         '''Get cross-validation statitics for model
+         10-Fold Cross Validation is used'''
          self.cv_accuracy = cross_validation.cross_val_score(\
          self.ml_algorithm, self.X_set, self.Y_set, cv=10)
          
 
     
     def evaluationResult(self,y_pred):
-	self.evalResult = classification_report(self.Y_set,y_pred)
+        '''Get evaluation results e.g. Precision, Recall and F1 scores'''
+        self.evalResult = classification_report(self.Y_set,y_pred)
+        #TODO: Consider if we want confusion matrix... what value does this add?
         self.confusionMatrix = confusion_matrix(self.Y_set,y_pred)
         
     def fitModel(self):
