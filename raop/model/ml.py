@@ -14,12 +14,13 @@ class MLmodel(object):
         self.evalResult = None
         self.cv_accuracy = None
         self.ml_algorithm = ml_algorithm
+        self.model = ml_algorithm
         self.modelFileName = None
         self.X_set = X_set
         self.Y_set = Y_set
 
     def saveModel(self, filename):
-        joblib.dump(self.ml_algorithm,filename)
+        joblib.dump(self.model,filename)
 
     #def cvResult(self):
         #return 0
@@ -34,5 +35,11 @@ class MLmodel(object):
     def evaluationResult(self,y_pred):
 	self.evalResult = classification_report(self.Y_set,y_pred)
         self.confusionMatrix = confusion_matrix(self.Y_set,y_pred)
+        
+    def fitModel(self):
+        '''Given ml_algorithm, build model with X's and Y's and store model'''
+        classifier = self.ml_algorithm
+        classifier.fit(self.X_set , self.Y_set)
+        self.model = classifier
        
   

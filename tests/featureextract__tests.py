@@ -34,7 +34,6 @@ def testNarratives():
     assert_equal(featObj.narrativeCountJob,0)
     assert_equal(featObj.narrativeCountFamily,3)
 
-#TODO: Waiting for Kevin's code, this neeeds to be fixed.
 def testReciprocity():
     testRecipro_text = " hi, i will pay it forward and return the favor wich will be doing reciprocity"
     

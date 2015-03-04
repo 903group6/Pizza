@@ -103,7 +103,8 @@ def getFeatures(inputJSONfile):
         temp_feat.append(featObj.firstHalf)
         X_set.append(temp_feat)
         Y_set.append(dict["requester_received_pizza"])
-    #TO DO:Normalisation/Vectorization
+        #TO DO:Normalisation/Vectorization
     
+    #TODO: Change this to return numpy arrays??? it is required for models
     return X_set, Y_set
 
