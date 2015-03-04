@@ -1,6 +1,9 @@
 import raop.helper as helper
 import raop.preprocess.preprocess as preproc
 import raop.featureextract.featureextract as featureextract
+import raop.model.ml as model
+import numpy as np
+import os
 import nltk
 
 #Step 1	- Remove desired keys from each dictionary
@@ -106,5 +109,78 @@ def getFeatures(inputJSONfile):
         #TO DO:Normalisation/Vectorization
     
     #TODO: Change this to return numpy arrays??? it is required for models
-    return X_set, Y_set
+    return np.array(X_set), np.array(Y_set)
+    
+#####################
+#Step 4 - Generic pipeline component to build model, save model, and output
+#         evaluation metrics
+def modelPipeline(classifier, X_set, Y_set,\
+    modelOutpath, modelName, directoryName, description):
+    '''
+    INPUTS: 
+    classifier = any sklearn classifier ex: GaussianNB()
+    X_set = all features in numpy array format
+    Y_set = all classifications in numpy array format (e.g. pizza True/False)
+    
+    modelOutpath = directory location of all models
+    modelName = the name of model (perhaps a unique name)
+    directoryName = the name of new directory to create your model
+    description = full description of model (e.g. who ran it, date, features included)
+    
+    
+    OUTPUTS:
+    - Model binary files to specified directory
+    - Report with details on model (e.g. Metrics such as F1/Precision, 
+    cross-validation stats)
+     
+    '''
+    #create model & cross-valid metrics  
+    modelObj = model.MLmodel(classifier, X_set, Y_set)
+    modelObj.crossValidate()
+    cvStats = modelObj.cv_accuracy
+    cvStats = cvStats.tolist()
+    modelObj.fitModel()
+
+    #Create model predictions & calculate precision/recall/F1
+    y_preds = modelObj.model.predict(X_set)  #get predictions for model
+    modelObj.evaluationResult(y_preds)
+
+    #output model to directory
+    dirPath = modelOutpath + directoryName
+    if not os.path.exists(dirPath):
+        os.makedirs(dirPath)
+        
+    fullOutPath = dirPath + '/' + modelName
+    modelObj.saveModel(fullOutPath)
+
+    #####save report to directory#####
+    reportFile = fullOutPath + '.report'
+    oFile = open(reportFile,'w')
+
+    #report information
+    oFile.write('Model Name: ' + modelName + '\n')
+    oFile.write('Model Description: ' + description + '\n')
+    oFile.write('Model Feautures: ' + 'BASELINE FEATURES' + '\n\n')
+
+    #prec/recall/f-1
+    oFile.write('Model Evaluation Metrics\n')
+    oFile.write('----------------------\n\n')
+    oFile.write(modelObj.evalResult)
+    oFile.write('\n\n----------------------\n\n')
+
+    #cross-valid stats
+    oFile.write('Cross Validation Stats\n')
+    oFile.write('----------------------\n')
+    i = 1
+    foldTotal = 0.0
+    for fold in cvStats:
+        oFile.write("Fold-" + str(i) + " = " + str(fold) + '\n')
+        i += 1
+        foldTotal += fold
+
+    oFile.write('----------------------\n')
+    oFile.write("Average = " + str(foldTotal/(i-1)))
+
+
+    oFile.close()
 
