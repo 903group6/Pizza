@@ -66,12 +66,12 @@ class FeatureExtract(object):
         self.narrativeCountJob = len(job_match)
         self.narrativeCountFamily = len(family_match)
 
-
     def identifyReciprocity(self, request_text_edit_aware):
         reciprocity_regex = re.compile(r"([Pp]ay [Ii]t [Ff]orward|[Rr]eturn [Tt]he [Ff]avor|[Rr]eciprocat.*)")
-        match = re.findall(reciprocity_regex,request_text_edit_aware)
-        self.findReciprocity = len(match)
-
+        if re.search(reciprocity_regex,request_text_edit_aware):
+          self.findReciprocity = 1
+        else:
+          self.findReciprocity = 0
 
     def countWord(self,tokens):
         self.wordNum = len(tokens)
@@ -90,7 +90,7 @@ class FeatureExtract(object):
        # 1 - yes
        # 2 - no
 	date=datetime.datetime.fromtimestamp(time)
-	if(date.day < 15):
+	if(date.day < 16):
 		self.firstHalf=1
 	else:
 		self.firstHalf=0
