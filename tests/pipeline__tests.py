@@ -8,6 +8,7 @@ keysInFileName = "test-data/oneJSONentry.json"
 keysOutFileName = "test-data/output-part1-keys-removed-oneJSONentry.json"
 inFileName = "test-data/utf-encoding-test.json"
 outFileName = "test-data/output-part2-utf-encoding-test.json"
+outTestFileName = "test-data/output-part2-utf-encoding-test-testset.json"
 
 def test_part1_remove_keys():
 	'''Test for part 1 of pipeline. The keys listed in function must be removed'''
@@ -30,9 +31,11 @@ def test_part3_getFeatures():
     Extract features from JSON file and Create a feature vectors for each instance'''
     expectedX=np.array([[0,616,294.1380208333333,0,3,5,4,4,0,233,0.0,1]])
     expectedY=np.array([False])
-    actualX, actualY = pipeline.getFeatures(outFileName)
+    actualX, actualY = pipeline.getFeatures(outFileName,0)
     assert_equal(expectedX.all(),actualX.all())
     assert_equal(expectedY.all(),actualY.all())
+    actualX = pipeline.getFeatures(outFileName,1)
+    assert_equal(expectedX.all(),actualX.all())
     
     
 def test_part4_buildModel_and_results():
@@ -45,7 +48,7 @@ def test_part4_buildModel_and_results():
     modelOutpath = path + '/resources/models/'
 
     #fetch features and requestor results (i.e. X's and Y's)
-    features, pizzas = pipeline.getFeatures(trainFile)
+    features, pizzas = pipeline.getFeatures(trainFile,0)
 
     #model details
     from sklearn.naive_bayes import GaussianNB
@@ -54,7 +57,8 @@ def test_part4_buildModel_and_results():
     directoryName = "GaussianNaiveBayes"
     description = "Steven Zimmerman - March 3rd 2015 - Gaussian Naive Bayes"
 
-    pipeline.modelPipeline(classifier, features, pizzas, modelOutpath, modelName, directoryName, description)
+    pipeline.modelPipeline(classifier, features, pizzas, modelOutpath,\
+    modelName, directoryName, description)
     
     fullReportPath = modelOutpath + directoryName + '/' + modelName + '.report'
     expectedReportPath = 'test-data/expected-GaussianNaiveBayes.report'

@@ -34,8 +34,10 @@ class MLmodel(object):
          
 
     
-    def evaluationResult(self,y_pred):
+    def evaluationResult(self,y_pred, Y_valid = None):
         '''Get evaluation results e.g. Precision, Recall and F1 scores'''
+	if Y_valid != None:
+		self.Y_set = Y_valid
         self.evalResult = classification_report(self.Y_set,y_pred)
         #TODO: Consider if we want confusion matrix... what value does this add?
         self.confusionMatrix = confusion_matrix(self.Y_set,y_pred)
