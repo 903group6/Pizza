@@ -5,6 +5,7 @@ import raop.model.ml as model
 import numpy as np
 import os
 import nltk
+from sklearn.cross_validation import train_test_split as train_valid_split
 
 #Step 1	- Remove desired keys from each dictionary
 def removeNonNeededKeys(inputJSONfile,outputJSONfile):
@@ -67,7 +68,7 @@ def addPreprocessedKeyVals(inputJSONfile,outputJSONfile):
 ###########################
 
 #Step 3 - Extract Features / Create Feature Vectors
-def getFeatures(inputJSONfile):
+def getFeatures(inputJSONfile, isTest):
     '''Loads Json(output from step 2) file to list --> creates object for 
        each dictionary in list. Then extract features from each dictionary,
        and keep it in a feature vector. Once feature extraction is completed,
@@ -105,11 +106,15 @@ def getFeatures(inputJSONfile):
         temp_feat.append(featObj.time)
         temp_feat.append(featObj.firstHalf)
         X_set.append(temp_feat)
-        Y_set.append(dict["requester_received_pizza"])
+        if isTest==0:
+            Y_set.append(dict["requester_received_pizza"])
         #TO DO:Normalisation/Vectorization
     
     #TODO: Change this to return numpy arrays??? it is required for models
-    return np.array(X_set), np.array(Y_set)
+    if isTest ==0:
+        return np.array(X_set), np.array(Y_set)
+    else:
+        return np.array(X_set)
     
 #####################
 #Step 4 - Generic pipeline component to build model, save model, and output
@@ -134,24 +139,23 @@ def modelPipeline(classifier, X_set, Y_set,\
     cross-validation stats)
      
     '''
-    #create model & cross-valid metrics  
-    modelObj = model.MLmodel(classifier, X_set, Y_set)
+    #create Validation model & cross-valid metrics  
+    #split training set into 80/20 split.  This will be useful for evaluation metrics
+    X_train, X_valid , Y_train, Y_valid = train_valid_split(X_set,Y_set,test_size=0.2, random_state=42)
+    modelObj = model.MLmodel(classifier, X_train, Y_train)
     modelObj.crossValidate()
     cvStats = modelObj.cv_accuracy
     cvStats = cvStats.tolist()
     modelObj.fitModel()
 
-    #Create model predictions & calculate precision/recall/F1
-    y_preds = modelObj.model.predict(X_set)  #get predictions for model
-    modelObj.evaluationResult(y_preds)
+    #Create validation model predictions & calculate precision/recall/F1
+    y_preds = modelObj.model.predict(X_valid)  #get predictions for model
+    modelObj.evaluationResult(y_preds,Y_valid)
 
-    #output model to directory
+    #set output model to directory
     dirPath = modelOutpath + directoryName
-    if not os.path.exists(dirPath):
-        os.makedirs(dirPath)
-        
     fullOutPath = dirPath + '/' + modelName
-    modelObj.saveModel(fullOutPath)
+
 
     #####save report to directory#####
     reportFile = fullOutPath + '.report'
@@ -183,4 +187,16 @@ def modelPipeline(classifier, X_set, Y_set,\
 
 
     oFile.close()
+
+    #RELOAD DATA and CREATE FINAL MODEL
+    #reload training data and create model on 100% of training set
+    modelObj = model.MLmodel(classifier, X_set, Y_set)
+    modelObj.fitModel()
+    
+    #save final model
+    if not os.path.exists(dirPath):
+        os.makedirs(dirPath)
+        
+    
+    modelObj.saveModel(fullOutPath)
 

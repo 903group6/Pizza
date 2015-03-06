@@ -13,11 +13,11 @@ features, pizzas = pipeline.getFeatures(trainFile)
 #pizzas = np.array(pizzas)
 
 #my model details
-from sklearn.naive_bayes import GaussianNB
-classifier = GaussianNB()
-modelName = "GaussianNaiveBayes"
-directoryName = "GaussianNaiveBayes"
-description = "Steven Zimmerman - March 3rd 2015 - Gaussian Naive Bayes"
+from sklearn.ensemble import RandomForestClassifier
+classifier =RandomForestClassifier()
+modelName = "RandomForestClassifier"
+directoryName = "RandomForestClassifier"
+description = "Can Udomcharoenchaikit - 5th March 2015 - Random Forest"
 
 
 pipeline.modelPipeline(classifier, features, pizzas, modelOutpath, modelName, directoryName, description)
