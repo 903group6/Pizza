@@ -8,7 +8,7 @@ trainFile = 'resources/2-train-preprocessed-keys-added.json'
 modelOutpath = 'resources/models/'
 
 #fetch features and requestor results (i.e. X's and Y's)
-features, pizzas = pipeline.getFeatures(trainFile)
+features, pizzas = pipeline.getFeatures(trainFile,0)
 
 #my model details
 from sklearn.naive_bayes import GaussianNB

@@ -155,6 +155,8 @@ def modelPipeline(classifier, X_set, Y_set,\
     #set output model to directory
     dirPath = modelOutpath + directoryName
     fullOutPath = dirPath + '/' + modelName
+    if not os.path.exists(dirPath):
+        os.makedirs(dirPath)
 
 
     #####save report to directory#####
@@ -194,9 +196,5 @@ def modelPipeline(classifier, X_set, Y_set,\
     modelObj.fitModel()
     
     #save final model
-    if not os.path.exists(dirPath):
-        os.makedirs(dirPath)
-        
-    
     modelObj.saveModel(fullOutPath)
 
