@@ -36,4 +36,6 @@ def eval_test():
 
     assert_equal(modelObj.evalResult, evalOutput)
     assert_equal((modelObj.confusionMatrix==expectedConfMatrix).all(),True)
+    
+#TODO: Need test for fitModel function
 
