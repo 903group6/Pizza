@@ -36,7 +36,10 @@ def test_part3_getFeatures():
     
     
 def test_part4_buildModel_and_results():
-    #TODO:Write TESTS
+    '''Test to confirm that report is properly output.  The output report
+    should match the expected report.  If results match then it is confirm that
+    other pipeline components are working as well (e.g. saving model files)
+    however other functionality is tested elsewhere'''
     path = os.path.dirname(os.getcwd())
     trainFile = path + '/resources/2-train-preprocessed-keys-added.json'
     modelOutpath = path + '/resources/models/'
@@ -51,4 +54,19 @@ def test_part4_buildModel_and_results():
     directoryName = "GaussianNaiveBayes"
     description = "Steven Zimmerman - March 3rd 2015 - Gaussian Naive Bayes"
 
-    pipeline.modelPipeline(classifier, features, pizzas, modelOutpath, modelName, directoryName, description)    
+    pipeline.modelPipeline(classifier, features, pizzas, modelOutpath, modelName, directoryName, description)
+    
+    fullReportPath = modelOutpath + directoryName + '/' + modelName + '.report'
+    expectedReportPath = 'test-data/expected-GaussianNaiveBayes.report'
+    
+    testOutFile = open(fullReportPath,'r')
+    testExpectedFile = open(expectedReportPath, 'r')
+    outLines = []
+    expectLines = []
+    
+    for line in testOutFile:
+        outLines.append(line)
+    for line in testExpectedFile:
+        expectLines.append(line)
+    assert_equal(outLines,expectLines)
+ 

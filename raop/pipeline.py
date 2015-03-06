@@ -179,7 +179,7 @@ def modelPipeline(classifier, X_set, Y_set,\
         foldTotal += fold
 
     oFile.write('----------------------\n')
-    oFile.write("Average = " + str(foldTotal/(i-1)))
+    oFile.write("Average = " + str(foldTotal/(i-1)) + '\n')
 
 
     oFile.close()
