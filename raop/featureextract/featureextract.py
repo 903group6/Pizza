@@ -128,6 +128,22 @@ class FeatureExtract(object):
             self.firstHalf=1
         else:
             self.firstHalf=0
+     
+    def CountPOSTag(self, listOfTokensTags , POStag = None):
+        '''
+        Counts the number of occurences of specified POS tag
+        listOfTokensTags = [['Thanks','NNP']['good','JJ'],['super','JJS']]
+        POStag = JJ or NNS or something else
+        '''
+        count = 0 
+        for item in listOfTokensTags:
+            currentPOS = item[1]
+            if re.search(POStag, currentPOS):
+                count = count + 1
+        
+        return count        
+                
+
 		
 
 

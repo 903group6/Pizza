@@ -85,6 +85,7 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
     for dict in thelist:
         temp_feat = []
         temp_addit_feat =[]
+        addit_feat_to_append = []
         
         #Base features
         #Populate the feature vector for each instance with base features
@@ -120,7 +121,7 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         temp_feat.append(featObj.narrativeCountMoney2)
         temp_feat.append(featObj.narrativeCountJob)
         temp_feat.append(featObj.narrativeCountFamily)
-         
+
         
         temp_feat.append(featObj.findReciprocity)
         temp_feat.append(featObj.wordNum)
@@ -129,27 +130,34 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         temp_feat.append(featObj.firstHalf)
 
         #Additional Features
+        #1 = num adjectives/num words
+        temp_addit_feat.append(\
+        float(featObj.CountPOSTag(dict["added_POStags"],'JJ')) / \
+        float(featObj.wordNum))
+        
+        #2 = num adverbs/num words
+        temp_addit_feat.append(\
+        float(featObj.CountPOSTag(dict["added_POStags"],'RB')) / \
+        float(featObj.wordNum))
+        
+        #3 = num adverbs/num words
+        temp_addit_feat.append(\
+        float(featObj.CountPOSTag(dict["added_POStags"],'NN')) / \
+        float(featObj.wordNum))  
+        
+        #4 = num adverbs/num words
+        temp_addit_feat.append(\
+        float(featObj.CountPOSTag(dict["added_POStags"],'VB')) / \
+        float(featObj.wordNum))                
+               
+        #based on input list, add in the specified features.  numbers in list
+        # must match the corresponding numbers in additional features list above
         if xt_features_idxs != None:
             for index in xt_features_idxs:
-                if index == 0:
-                    print ''    
-                    #featObj.getNumAdj(dict["added_Title_+_Request"])
-                    #temp_addit_feat.append(featObj.numAdj)    
-                if index == 1:
-                    print '' 
-                    #featObj.getPerAdj(dict["added_Title_+_Request"])
-                    #temp_addit_feat.append(featObj.perAdj)  
-                if index == 2:
-                    print '' 
-                    #featObj.getNumAdv(dict["added_Title_+_Request"])
-                    #temp_addit_feat.append(featObj.numAdv)
-                if index == 3:
-                    print '' 
-                    #featObj.getPerAdv(dict["added_Title_+_Request"])
-                    #temp_addit_feat.append(featObj.perAdv)
+                addit_feat_to_append.append(temp_addit_feat[index-1])
                     
-        #extend the feature vector with additional features            
-        temp_feat.extend(temp_addit_feat)        
+        #extend the feature vector with specified additional features            
+        temp_feat.extend(addit_feat_to_append)        
         #add the feature vector to X set
         X_set.append(temp_feat)
 

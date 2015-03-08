@@ -62,5 +62,11 @@ def testfirstHalf():
     featObj = featureextract.FeatureExtract()
     featObj.getFirstHalf(testInput)
     assert_equal(featObj.firstHalf,1)
+    
+def testPOSTag():
+    testTags = [['Thanks','NNP'],['good','JJ'],['super','JJS']]
+    featObj = featureextract.FeatureExtract()
+    tagCount = featObj.CountPOSTag(testTags, 'JJ')
+    assert_equal(tagCount, 2)   
 
 
