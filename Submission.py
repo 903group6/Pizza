@@ -26,7 +26,7 @@ testFile = 'resources/test-preprocessed-keys-added.json'
 modelOutpath = 'resources/models/'
 #TODO: Fix the naming conventions... should be dirName not modelFile
 modelName = "SVM"
-modelFile = 'SVM-Norm-CLauto'
+modelFile = 'SVM-Norm-linear-CLauto-timeHardCode'
 inputModelFileName = modelOutpath + modelName + '/' + modelFile
 
 model = joblib.load(inputModelFileName)
