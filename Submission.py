@@ -11,7 +11,7 @@ trainFile = 'resources/2-train-preprocessed-keys-added.json'
 modelOutpath = 'resources/models/'
 
 #fetch features and requestor results (i.e. X's and Y's)
-features, pizzas = pipeline.getFeatures(trainFile,0)
+features, pizzas = pipeline.getFeatures(trainFile,0,[1,2,3,4])
 
 #normalize
 from sklearn import preprocessing
@@ -26,13 +26,13 @@ testFile = 'resources/test-preprocessed-keys-added.json'
 modelOutpath = 'resources/models/'
 #TODO: Fix the naming conventions... should be dirName not modelFile
 modelName = "SVM"
-modelFile = 'SVM-Norm-linear-CLauto-timeHardCode'
+modelFile = 'SVM-Norm-linear-CLauto-Add-JJ-RB-NN-VB'
 inputModelFileName = modelOutpath + modelName + '/' + modelFile
 
 model = joblib.load(inputModelFileName)
 
 #fetch features  (i.e. X's )
-features = pipeline.getFeatures(testFile,1)
+features = pipeline.getFeatures(testFile,1,[1,2,3,4])
 listofID = []
 testdata = helper.loadJSONfromFile(testFile)
 for item in testdata:
