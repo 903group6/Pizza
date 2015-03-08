@@ -3,6 +3,17 @@ import datetime
 
 
 class FeatureExtract(object):
+'''
+This class contains modules that extract features from the dataset
+which are:
+findEvidence - find post with image/proof
+evalStatus - status of the requester
+identifyNarratives - the number of terms in different kinds of stories/narratives
+identifyReciprocity - Detect phrases that relates to the concept of "paying kindness forward"
+countWord - the total number of words  of the request
+getTime - unix timestamp of the request subtracted by the global minimum timestamp of all datasets 
+getFirstHalf - check whether the request was made at the first half of the month or not
+'''
     def  __init__(self):
         self.evidence = None
         self.statusKarma = None
@@ -51,6 +62,9 @@ class FeatureExtract(object):
 
 
     def identifyNarratives(self,request_text_edit_aware):
+       '''Count the number of terms in different kinds of stories using regular expression: Money1 Money2 Job Family
+          As suggested on http://cs.stanford.edu/~althoff/raop-dataset/altruistic_requests_icwsm.pdf
+       '''
         money1_regex = re.compile(r"(week|ramen|paycheck|work|couple|rice|check|pizza|grocery|rent|anyone|favor|someone|bill|money)")
         money2_regex = re.compile(r"(food|money|house|bill|rent|stamp|month|today|parent|help|pizza|someone|anything|mom|anyone)")
         job_regex = re.compile(r"(job|month|rent|year|interview|bill|luck|school|pizza|paycheck|unemployment|money|ramen|end|check)")
@@ -67,6 +81,11 @@ class FeatureExtract(object):
         self.narrativeCountFamily = len(family_match)
 
     def identifyReciprocity(self, request_text_edit_aware):
+        '''
+        Detect phrases that relates to the concept of "paying kindness forward" using regular expression
+        1 - detected
+        0 - not detected
+        '''
         reciprocity_regex = re.compile(r"([Pp]ay [Ii]t [Ff]orward|[Rr]eturn [Tt]he [Ff]avor|[Rr]eciprocat.*)")
         if re.search(reciprocity_regex,request_text_edit_aware):
           self.findReciprocity = 1
@@ -74,23 +93,36 @@ class FeatureExtract(object):
           self.findReciprocity = 0
 
     def countWord(self,tokens):
+        '''
+        Count the total number of words  of the request
+        '''
         self.wordNum = len(tokens)
     
     def getMinTime(self,timeList):
+        '''
+        Find the minimum timestamp in the dataset
+        '''
 	listofTime=[]
 	for dict in timeList:
 		listofTime.append(dict["unix_timestamp_of_request"])
 	self.minTime=min(listofTime)
 
     def getTime(self,time):
+        '''
+        Subtract unix timestamp of the request by the global minimum timestamp of all datasets 
+        '''
         #startTime = self.minTime
         startTime = 1297722537.0    #hard coding start time = global min for datasets
                                     #this only works for Kaggle raop data
+                                    #This improved our Kaggle leader board position by 6 spots
         self.time = time-startTime
 
     def getFirstHalf(self,time):
-       # 1 - yes
-       # 2 - no
+        '''
+        Uses unix timestamp to check whether the request was made at the first half of the month or not.
+        1 - yes
+        0 - no
+        '''
 	date=datetime.datetime.fromtimestamp(time)
 	if(date.day < 16):
 		self.firstHalf=1
