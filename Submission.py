@@ -5,13 +5,28 @@ import numpy as np
 import raop.helper as helper
 import os
 
+############get scaling paramaters################
+trainFile = 'resources/2-train-preprocessed-keys-added.json'
+
+modelOutpath = 'resources/models/'
+
+#fetch features and requestor results (i.e. X's and Y's)
+features, pizzas = pipeline.getFeatures(trainFile,0)
+
+#normalize
+from sklearn import preprocessing
+scaler = preprocessing.StandardScaler().fit(features)
+
+############# end get scaling features #####################
+
 #kaggle test data
 testFile = 'resources/test-preprocessed-keys-added.json'
 
 #path and filename info
 modelOutpath = 'resources/models/'
-modelName = 'RandomForestClassifier'
-modelFile = 'RandomForestClassifier'
+#TODO: Fix the naming conventions... should be dirName not modelFile
+modelName = "SVM"
+modelFile = 'SVM-Norm-CLauto'
 inputModelFileName = modelOutpath + modelName + '/' + modelFile
 
 model = joblib.load(inputModelFileName)
@@ -22,6 +37,9 @@ listofID = []
 testdata = helper.loadJSONfromFile(testFile)
 for item in testdata:
     listofID.append(item["request_id"])
+    
+#scale the features
+features = scaler.transform(features)
 
 
 #get results predcitions and convert to list		
