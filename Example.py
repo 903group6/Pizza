@@ -28,7 +28,7 @@ pipeline.modelPipeline(classifier, features, pizzas, modelOutpath, modelName, di
 #svm
 import sklearn.svm as svm 
 classifier = svm.SVC(kernel='linear',class_weight = 'auto')
-modelName = "SVM-Norm-linear-CLauto"
+modelName = "SVM-Norm-linear-CLauto-timeHardCode"
 directoryName = "SVM"
 description = ""
 pipeline.modelPipeline(classifier, features, pizzas, modelOutpath, modelName, directoryName, description)
