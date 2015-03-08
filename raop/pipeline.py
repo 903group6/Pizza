@@ -68,11 +68,13 @@ def addPreprocessedKeyVals(inputJSONfile,outputJSONfile):
 ###########################
 
 #Step 3 - Extract Features / Create Feature Vectors
-def getFeatures(inputJSONfile, isTest):
+
+
+	
+def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
     '''Loads Json(output from step 2) file to list --> creates object for 
        each dictionary in list. Then extract features from each dictionary,
-       and keep it in a feature vector. Once feature extraction is completed,
-       normalise the feature vectors.
+       and keep it in a feature vector.
        '''
     thelist = helper.loadJSONfromFile(inputJSONfile)
     featObj = featureextract.FeatureExtract()
@@ -82,38 +84,87 @@ def getFeatures(inputJSONfile, isTest):
 
     for dict in thelist:
         temp_feat = []
+        temp_addit_feat =[]
+        
+        #Base features
+        #Populate the feature vector for each instance with base features
+        # Evidence (proof on imgur,youtube,etc.) - 1-True/0-False
+        # Status: Karma - Numerical(upvote - downvote)
+        # Status: Account Age - Numerical (# of days as a member of reddit)
+        # Status: Previously active on RAOP - 1-True  0 - False
+        # Detected Narrative terms: Money 1 - Numerical (# of words)
+        # Detected Narrative terms: Money 2 - Numerical (# of words)
+        # Detected Narrative terms: Job - Numerical (# of words)
+        # Detected Narrative terms: Family - Numerical (# of words)
+        # Reciprocity : 1- True , 0 - False
+        # Word Count : Numerical (number of words)
+        # Time of request:
+        # First half of the month: 1-True, 0 - False
         featObj.findEvidence(dict["added_Title_+_Request"])
         featObj.evalStatus(dict["requester_upvotes_minus_downvotes_at_request"],\
         dict["requester_account_age_in_days_at_request"],\
         dict["requester_number_of_comments_in_raop_at_request"],\
         dict["requester_number_of_posts_on_raop_at_request"])
+        featObj.identifyNarratives(dict["added_Title_+_Request"])
+        featObj.identifyReciprocity(dict["added_Title_+_Request"])
+        featObj.countWord(dict["added_tokens"])
+        featObj.getTime(dict["unix_timestamp_of_request"])
+        featObj.getFirstHalf(dict["unix_timestamp_of_request"])
+        
         temp_feat.append(featObj.evidence)
         temp_feat.append(featObj.statusKarma)
         temp_feat.append(featObj.statusAccAge)
         temp_feat.append(featObj.statusPrevAct)
-        featObj.identifyNarratives(dict["added_Title_+_Request"])
+        
         temp_feat.append(featObj.narrativeCountMoney1)
         temp_feat.append(featObj.narrativeCountMoney2)
         temp_feat.append(featObj.narrativeCountJob)
         temp_feat.append(featObj.narrativeCountFamily)
          
-        featObj.identifyReciprocity(dict["added_Title_+_Request"])
-        featObj.countWord(dict["added_tokens"])
+        
         temp_feat.append(featObj.findReciprocity)
         temp_feat.append(featObj.wordNum)
-        featObj.getTime(dict["unix_timestamp_of_request"])
-        featObj.getFirstHalf(dict["unix_timestamp_of_request"])
+        
         temp_feat.append(featObj.time)
         temp_feat.append(featObj.firstHalf)
+
+        #Additional Features
+        if xt_features_idxs != None:
+            for index in xt_features_idxs:
+                if index == 0:
+                    print ''    
+                    #featObj.getNumAdj(dict["added_Title_+_Request"])
+                    #temp_addit_feat.append(featObj.numAdj)    
+                if index == 1:
+                    print '' 
+                    #featObj.getPerAdj(dict["added_Title_+_Request"])
+                    #temp_addit_feat.append(featObj.perAdj)  
+                if index == 2:
+                    print '' 
+                    #featObj.getNumAdv(dict["added_Title_+_Request"])
+                    #temp_addit_feat.append(featObj.numAdv)
+                if index == 3:
+                    print '' 
+                    #featObj.getPerAdv(dict["added_Title_+_Request"])
+                    #temp_addit_feat.append(featObj.perAdv)
+                    
+        #extend the feature vector with additional features            
+        temp_feat.extend(temp_addit_feat)        
+        #add the feature vector to X set
         X_set.append(temp_feat)
-        if isTest==0:
+
+        
+        if isTest==0: # If the input json file is not the Kaggle test set
+            # Append the requester_received_pizza label to the Y set      
             Y_set.append(dict["requester_received_pizza"])
-        #TO DO:Normalisation/Vectorization
+     
     
-    #TODO: Change this to return numpy arrays??? it is required for models
+
     if isTest ==0:
+        #return both X set and Y set, if the inputJSON is the trainning set
         return np.array(X_set), np.array(Y_set)
     else:
+        #return only X set if the inputJSON is the Kaggle test set
         return np.array(X_set)
     
 #####################
