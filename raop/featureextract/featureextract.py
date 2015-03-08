@@ -3,17 +3,17 @@ import datetime
 
 
 class FeatureExtract(object):
-'''
-This class contains modules that extract features from the dataset
-which are:
-findEvidence - find post with image/proof
-evalStatus - status of the requester
-identifyNarratives - the number of terms in different kinds of stories/narratives
-identifyReciprocity - Detect phrases that relates to the concept of "paying kindness forward"
-countWord - the total number of words  of the request
-getTime - unix timestamp of the request subtracted by the global minimum timestamp of all datasets 
-getFirstHalf - check whether the request was made at the first half of the month or not
-'''
+    '''
+    This class contains modules that extract features from the dataset
+    which are:
+    findEvidence - find post with image/proof
+    evalStatus - status of the requester
+    identifyNarratives - the number of terms in different kinds of stories/narratives
+    identifyReciprocity - Detect phrases that relates to the concept of "paying kindness forward"
+    countWord - the total number of words  of the request
+    getTime - unix timestamp of the request subtracted by the global minimum timestamp of all datasets 
+    getFirstHalf - check whether the request was made at the first half of the month or not
+    '''
     def  __init__(self):
         self.evidence = None
         self.statusKarma = None
@@ -25,18 +25,18 @@ getFirstHalf - check whether the request was made at the first half of the month
         self.narrativeCountFamily = None
         self.findReciprocity = None
         self.wordNum = None
-	self.minTime = None
-	self.time = None
-	self.firstHalf = None
+        self.minTime = None
+        self.time = None
+        self.firstHalf = None
 
     def findEvidence(self,request_text_edit_aware):
-	'''Find reddit post with image/proof
-	   On roap, users often post thier photo/video 
+        '''Find reddit post with image/proof
+        On roap, users often post thier photo/video 
            as an evidence of thier condition/existence
-	   this module uses regex library (re) to parse
-	   url from imgur and youtube
+        this module uses regex library (re) to parse
+        url from imgur and youtube
            As well as url with jpg and png file 		
-	   1 - evidence is found
+        1 - evidence is found
            0 - evidence is not found
         '''
 
@@ -50,11 +50,11 @@ getFirstHalf - check whether the request was made at the first half of the month
     def evalStatus(self,requester_upvotes_minus_downvotes_at_request, \
 	requester_account_age_in_days_at_request, requester_number_of_comments_in_raop_at_request,\
 	requester_number_of_posts_on_raop_at_request):
-	'''evaluate the status of the requester
-	   statusKarma = overall karma point at request time
-	   statusAccAge = account age at request time
-	   statisPrevAct 1-->previously active on raop, else 0
-	'''
+        '''evaluate the status of the requester
+           statusKarma = overall karma point at request time
+           statusAccAge = account age at request time
+           statisPrevAct 1-->previously active on raop, else 0
+        '''
         self.statusKarma = requester_upvotes_minus_downvotes_at_request
         self.statusAccAge = requester_account_age_in_days_at_request
         self.statusPrevAct = 1 if requester_number_of_comments_in_raop_at_request + \
@@ -62,9 +62,9 @@ getFirstHalf - check whether the request was made at the first half of the month
 
 
     def identifyNarratives(self,request_text_edit_aware):
-       '''Count the number of terms in different kinds of stories using regular expression: Money1 Money2 Job Family
+        '''Count the number of terms in different kinds of stories using regular expression: Money1 Money2 Job Family
           As suggested on http://cs.stanford.edu/~althoff/raop-dataset/altruistic_requests_icwsm.pdf
-       '''
+        '''
         money1_regex = re.compile(r"(week|ramen|paycheck|work|couple|rice|check|pizza|grocery|rent|anyone|favor|someone|bill|money)")
         money2_regex = re.compile(r"(food|money|house|bill|rent|stamp|month|today|parent|help|pizza|someone|anything|mom|anyone)")
         job_regex = re.compile(r"(job|month|rent|year|interview|bill|luck|school|pizza|paycheck|unemployment|money|ramen|end|check)")
@@ -102,10 +102,10 @@ getFirstHalf - check whether the request was made at the first half of the month
         '''
         Find the minimum timestamp in the dataset
         '''
-	listofTime=[]
-	for dict in timeList:
-		listofTime.append(dict["unix_timestamp_of_request"])
-	self.minTime=min(listofTime)
+        listofTime=[]
+        for dict in timeList:
+            listofTime.append(dict["unix_timestamp_of_request"])
+        self.minTime=min(listofTime)
 
     def getTime(self,time):
         '''
@@ -123,11 +123,11 @@ getFirstHalf - check whether the request was made at the first half of the month
         1 - yes
         0 - no
         '''
-	date=datetime.datetime.fromtimestamp(time)
-	if(date.day < 16):
-		self.firstHalf=1
-	else:
-		self.firstHalf=0
+        date=datetime.datetime.fromtimestamp(time)
+        if(date.day < 16):
+            self.firstHalf=1
+        else:
+            self.firstHalf=0
 		
 
 
