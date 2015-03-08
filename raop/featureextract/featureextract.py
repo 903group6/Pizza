@@ -83,8 +83,10 @@ class FeatureExtract(object):
 	self.minTime=min(listofTime)
 
     def getTime(self,time):
-	startTime = self.minTime
-	self.time = time-startTime
+        #startTime = self.minTime
+        startTime = 1297722537.0    #hard coding start time = global min for datasets
+                                    #this only works for Kaggle raop data
+        self.time = time-startTime
 
     def getFirstHalf(self,time):
        # 1 - yes
