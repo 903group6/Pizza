@@ -1,0 +1,33 @@
+[
+    {
+        "added_normalised_text": [
+            "[",
+            "request",
+            "]",
+            "california",
+            ":",
+            "("
+        ],
+        "requester_received_pizza": false,
+        "requester_upvotes_minus_downvotes_at_request": 34,
+        "requester_upvotes_plus_downvotes_at_request": 116,
+        "requester_username": "fohacidal",
+        "unix_timestamp_of_request": 1332652424.0,
+        "unix_timestamp_of_request_utc": 1332648824.0
+    },
+    {
+        "added_normalised_text": [
+            "[",
+            "request",
+            "]",
+            "california",
+            "hungri"
+        ],
+        "requester_received_pizza": true,
+        "requester_upvotes_minus_downvotes_at_request": 34,
+        "requester_upvotes_plus_downvotes_at_request": 116,
+        "requester_username": "fohacidal",
+        "unix_timestamp_of_request": 1332652424.0,
+        "unix_timestamp_of_request_utc": 1332648824.0
+    }
+]
