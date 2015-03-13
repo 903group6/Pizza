@@ -11,7 +11,7 @@ def buildModels(classifier, modelName, directoryName, modelOutpath, description,
     #fetch features and requestor results (i.e. X's and Y's), 
     #params = (file, train = 0 test = 1, additonal features to include)
     print 'Extracting Features....'
-    features, pizzas = pipeline.getFeatures(trainFile,0,[1,2,3,4])
+    features, pizzas = pipeline.getFeatures(trainFile,0,additionalFeaturesList)
 
     #normalize the feature set
     from sklearn import preprocessing
@@ -33,7 +33,7 @@ def buildModels(classifier, modelName, directoryName, modelOutpath, description,
 
     #fetch features  (i.e. X's )
     #params = (file, train = 0 test = 1, additonal features to include)
-    features = pipeline.getFeatures(testFile,1,[1,2,3,4])
+    features = pipeline.getFeatures(testFile,1,additionalFeaturesList)
     listofID = []
     testdata = helper.loadJSONfromFile(testFile)
     for item in testdata:

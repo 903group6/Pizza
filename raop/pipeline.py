@@ -5,6 +5,7 @@ import raop.model.ml as model
 import numpy as np
 import os
 import nltk
+import re
 from sklearn.cross_validation import train_test_split as train_valid_split
 
 #Step 1	- Remove desired keys from each dictionary
@@ -152,8 +153,8 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         
         #5 = num of sentences                
         temp_addit_feat.append(len(dict["added_segmented_sentences"]))
-
-               
+        
+   
         #based on input list, add in the specified features.  numbers in list
         # must match the corresponding numbers in additional features list above
         if xt_features_idxs != None:
