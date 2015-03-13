@@ -1,6 +1,6 @@
 import re
 import datetime
-
+import numpy as np
 
 class FeatureExtract(object):
     '''
@@ -28,6 +28,17 @@ class FeatureExtract(object):
         self.minTime = None
         self.time = None
         self.firstHalf = None
+        
+        
+        #can's additions 13MAR
+        self.narrativeCountMoney1Bin = None
+        self.narrativeCountMoney2Bin = None
+        self.narrativeCountJobBin = None
+        self.narrativeCountFamilyBin = None 
+        self.median_money1= None
+        self.median_money2= None
+        self.median_job= None
+        self.median_fam= None
 
     def findEvidence(self,request_text_edit_aware):
         '''Find reddit post with image/proof
@@ -143,11 +154,43 @@ class FeatureExtract(object):
         
         return count        
                 
+    #can's additions
+    def getMedianlist(self, thelist):#
+        money1 = []
+        money2 = []
+        job = []
+        fam = []
+        for dict in thelist:
+            self.countWord(dict["added_tokens"])
+            self.identifyNarratives(dict["added_Title_+_Request"])
+            money1.append(self.narrativeCountMoney1/float(self.wordNum))
+            money2.append(self.narrativeCountMoney2/float(self.wordNum))
+            job.append(self.narrativeCountJob/float(self.wordNum))
+            fam.append(self.narrativeCountFamily/float(self.wordNum))    
+	    self.median_money1=np.median(money1)
+        self.median_money2=np.median(money2)
+        self.median_job=np.median(job)
+        self.median_fam=np.median(fam)		
 
-		
 
+    def identifyNarrativesBinary(self,request_text_edit_aware, wordCount):
+        '''Count the number of terms in different kinds of stories using regular expression: Money1 Money2 Job Family
+        As suggested on http://cs.stanford.edu/~althoff/raop-dataset/altruistic_requests_icwsm.pdf
+        '''
+        money1_regex = re.compile(r"(week|ramen|paycheck|work|couple|rice|check|pizza|grocery|rent|anyone|favor|someone|bill|money)")
+        money2_regex = re.compile(r"(food|money|house|bill|rent|stamp|month|today|parent|help|pizza|someone|anything|mom|anyone)")
+        job_regex = re.compile(r"(job|month|rent|year|interview|bill|luck|school|pizza|paycheck|unemployment|money|ramen|end|check)")
+        family_regex = re.compile(r"(tonight|night|today|tomorrow|someone|anyone|friday|dinner|something|account|family|bank|anything|home|work)")
 
-	
+        money1_match = re.findall(money1_regex,request_text_edit_aware)
+        money2_match = re.findall(money2_regex,request_text_edit_aware)
+        job_match = re.findall(job_regex,request_text_edit_aware)
+        family_match = re.findall(family_regex,request_text_edit_aware)
+
+        self.narrativeCountMoney1Bin = 1 if (len(money1_match)/float(wordCount))>self.median_money1 else 0
+        self.narrativeCountMoney2Bin = 1 if (len(money2_match)/float(wordCount))>self.median_money1 else 0
+        self.narrativeCountJobBin = 1 if (len(job_match)/float(wordCount))>self.median_job else 0
+        self.narrativeCountFamilyBin = 1 if (len(family_match)/float(wordCount))>self.median_fam else 0	
 	
 
     

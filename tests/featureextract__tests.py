@@ -1,5 +1,6 @@
 from nose.tools import *
 import raop.featureextract.featureextract as featureextract
+from nltk.tokenize import word_tokenize
 
 def testEvidence():
     '''Test for find evidence function'''
@@ -33,6 +34,14 @@ def testNarratives():
     assert_equal(featObj.narrativeCountMoney2,2)
     assert_equal(featObj.narrativeCountJob,0)
     assert_equal(featObj.narrativeCountFamily,3)
+
+    featObj.countWord(word_tokenize(test_text))
+    featObj.getMedianlist([{"added_Title_+_Request":test_text,"added_tokens":word_tokenize(test_text)}])
+    featObj.identifyNarrativesBinary(test_text,featObj.wordNum)
+    assert_equal(featObj.narrativeCountMoney1Bin,0)
+    assert_equal(featObj.narrativeCountMoney2Bin,1)
+    assert_equal(featObj.narrativeCountJobBin,0)
+    assert_equal(featObj.narrativeCountFamilyBin,0)
 
 def testReciprocity():
     testRecipro_text = " hi, i will pay it forward and return the favor wich will be doing reciprocity"

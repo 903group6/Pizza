@@ -14,7 +14,7 @@ modelOutpath = 'resources/models/'
 import sklearn.svm as svm 
 
 classifier = svm.SVC(kernel='linear',class_weight = 'auto')
-modelName = "TEST-TEST-SVM-Norm-linear-CLauto-Add-JJ-RB-NN-VB-withCansChange"
+modelName = "SVM-Norm-linear-CLauto-Add-JJ-RB-NN-VB-CansBinary"
 directoryName = "SVM"
 description = "8th March 2015 "
 

@@ -82,6 +82,9 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
     X_set = []
     Y_set = []
     featObj.getMinTime(thelist)
+    
+    #can's change:
+    featObj.getMedianlist(thelist)
 
     for dict in thelist:
         temp_feat = []
@@ -107,9 +110,11 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         dict["requester_account_age_in_days_at_request"],\
         dict["requester_number_of_comments_in_raop_at_request"],\
         dict["requester_number_of_posts_on_raop_at_request"])
-        featObj.identifyNarratives(dict["added_Title_+_Request"])
-        featObj.identifyReciprocity(dict["added_Title_+_Request"])
         featObj.countWord(dict["added_tokens"])
+        featObj.identifyNarratives(dict["added_Title_+_Request"])
+        featObj.identifyNarrativesBinary(dict["added_Title_+_Request"],featObj.wordNum)
+        featObj.identifyReciprocity(dict["added_Title_+_Request"])
+       
         featObj.getTime(dict["unix_timestamp_of_request"])
         featObj.getFirstHalf(dict["unix_timestamp_of_request"])
         
@@ -122,7 +127,12 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         temp_feat.append(featObj.narrativeCountMoney2)
         temp_feat.append(featObj.narrativeCountJob)
         temp_feat.append(featObj.narrativeCountFamily)
-
+        
+        #can's changes to try
+        #temp_feat.append(featObj.narrativeCountMoney1Bin)
+        #temp_feat.append(featObj.narrativeCountMoney2Bin)
+        #temp_feat.append(featObj.narrativeCountJobBin)
+        #temp_feat.append(featObj.narrativeCountFamilyBin)
         
         temp_feat.append(featObj.findReciprocity)
         temp_feat.append(featObj.wordNum)
