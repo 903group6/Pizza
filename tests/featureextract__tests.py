@@ -1,6 +1,6 @@
 from nose.tools import *
 import raop.featureextract.featureextract as featureextract
-
+from nltk.tokenize import word_tokenize
 def testEvidence():
     '''Test for find evidence function'''
     testTextEvi_true = "This is the state of my refrigerator: [Linky](http://i.imgur.com/JRvYJ5s.jpg)"
@@ -26,13 +26,16 @@ def testStatus():
 
 def testNarratives():
     test_text = "Hi I am in need of food for my 4 children we are a military family that has really hit hard times and we have exahusted all means of help just to be able to feed my family and make it through another night is all i ask i know our blessing is coming so whatever u can find in your heart to give is greatly appreciated"
-  
+   
     featObj = featureextract.FeatureExtract()
-    featObj.identifyNarratives(test_text)
-    assert_equal(featObj.narrativeCountMoney1,0)
-    assert_equal(featObj.narrativeCountMoney2,2)
-    assert_equal(featObj.narrativeCountJob,0)
-    assert_equal(featObj.narrativeCountFamily,3)
+    featObj.countWord(word_tokenize(test_text))
+    featObj.getMedianlist([{"added_Title_+_Request":test_text,"added_tokens":word_tokenize(test_text)}])
+
+    featObj.identifyNarrativesBinary(test_text,featObj.wordNum)
+    assert_equal(featObj.narrativeCountMoney1Bin,0)
+    assert_equal(featObj.narrativeCountMoney2Bin,1)
+    assert_equal(featObj.narrativeCountJobBin,0)
+    assert_equal(featObj.narrativeCountFamilyBin,0)
 
 def testReciprocity():
     testRecipro_text = " hi, i will pay it forward and return the favor wich will be doing reciprocity"
@@ -62,11 +65,5 @@ def testfirstHalf():
     featObj = featureextract.FeatureExtract()
     featObj.getFirstHalf(testInput)
     assert_equal(featObj.firstHalf,1)
-    
-def testPOSTag():
-    testTags = [['Thanks','NNP'],['good','JJ'],['super','JJS']]
-    featObj = featureextract.FeatureExtract()
-    tagCount = featObj.CountPOSTag(testTags, 'JJ')
-    assert_equal(tagCount, 2)   
 
 
