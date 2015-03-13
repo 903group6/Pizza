@@ -81,11 +81,10 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
     X_set = []
     Y_set = []
     featObj.getMinTime(thelist)
-
+    featObj.getMedianlist(thelist)
     for dict in thelist:
         temp_feat = []
         temp_addit_feat =[]
-        addit_feat_to_append = []
         
         #Base features
         #Populate the feature vector for each instance with base features
@@ -106,9 +105,10 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         dict["requester_account_age_in_days_at_request"],\
         dict["requester_number_of_comments_in_raop_at_request"],\
         dict["requester_number_of_posts_on_raop_at_request"])
-        featObj.identifyNarratives(dict["added_Title_+_Request"])
-        featObj.identifyReciprocity(dict["added_Title_+_Request"])
         featObj.countWord(dict["added_tokens"])
+        featObj.identifyNarrativesBinary(dict["added_Title_+_Request"],featObj.wordNum)
+        featObj.identifyReciprocity(dict["added_Title_+_Request"])
+        
         featObj.getTime(dict["unix_timestamp_of_request"])
         featObj.getFirstHalf(dict["unix_timestamp_of_request"])
         
@@ -117,11 +117,11 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         temp_feat.append(featObj.statusAccAge)
         temp_feat.append(featObj.statusPrevAct)
         
-        temp_feat.append(featObj.narrativeCountMoney1)
-        temp_feat.append(featObj.narrativeCountMoney2)
-        temp_feat.append(featObj.narrativeCountJob)
-        temp_feat.append(featObj.narrativeCountFamily)
-
+        temp_feat.append(featObj.narrativeCountMoney1Bin)
+        temp_feat.append(featObj.narrativeCountMoney2Bin)
+        temp_feat.append(featObj.narrativeCountJobBin)
+        temp_feat.append(featObj.narrativeCountFamilyBin)
+         
         
         temp_feat.append(featObj.findReciprocity)
         temp_feat.append(featObj.wordNum)
@@ -130,38 +130,27 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         temp_feat.append(featObj.firstHalf)
 
         #Additional Features
-        #1 = num adjectives/num words
-        temp_addit_feat.append(\
-        float(featObj.CountPOSTag(dict["added_POStags"],'JJ')) / \
-        float(featObj.wordNum))
-        
-        #2 = num adverbs/num words
-        temp_addit_feat.append(\
-        float(featObj.CountPOSTag(dict["added_POStags"],'RB')) / \
-        float(featObj.wordNum))
-        
-        #3 = num adverbs/num words
-        temp_addit_feat.append(\
-        float(featObj.CountPOSTag(dict["added_POStags"],'NN')) / \
-        float(featObj.wordNum))  
-        
-        #4 = num adverbs/num words
-        temp_addit_feat.append(\
-        float(featObj.CountPOSTag(dict["added_POStags"],'VB')) / \
-        float(featObj.wordNum))
-        
-        #5 = num of sentences                
-        temp_addit_feat.append(len(dict["added_segmented_sentences"]))
-
-               
-        #based on input list, add in the specified features.  numbers in list
-        # must match the corresponding numbers in additional features list above
         if xt_features_idxs != None:
             for index in xt_features_idxs:
-                addit_feat_to_append.append(temp_addit_feat[index-1])
+                if index == 0:
+                    print ''    
+                    #featObj.getNumAdj(dict["added_Title_+_Request"])
+                    #temp_addit_feat.append(featObj.numAdj)    
+                if index == 1:
+                    print '' 
+                    #featObj.getPerAdj(dict["added_Title_+_Request"])
+                    #temp_addit_feat.append(featObj.perAdj)  
+                if index == 2:
+                    print '' 
+                    #featObj.getNumAdv(dict["added_Title_+_Request"])
+                    #temp_addit_feat.append(featObj.numAdv)
+                if index == 3:
+                    print '' 
+                    #featObj.getPerAdv(dict["added_Title_+_Request"])
+                    #temp_addit_feat.append(featObj.perAdv)
                     
-        #extend the feature vector with specified additional features            
-        temp_feat.extend(addit_feat_to_append)        
+        #extend the feature vector with additional features            
+        temp_feat.extend(temp_addit_feat)        
         #add the feature vector to X set
         X_set.append(temp_feat)
 
