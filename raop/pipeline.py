@@ -148,7 +148,11 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         #4 = num adverbs/num words
         temp_addit_feat.append(\
         float(featObj.CountPOSTag(dict["added_POStags"],'VB')) / \
-        float(featObj.wordNum))                
+        float(featObj.wordNum))
+        
+        #5 = num of sentences                
+        temp_addit_feat.append(len(dict["added_segmented_sentences"]))
+
                
         #based on input list, add in the specified features.  numbers in list
         # must match the corresponding numbers in additional features list above

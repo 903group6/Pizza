@@ -14,7 +14,7 @@ modelOutpath = 'resources/models/'
 import sklearn.svm as svm 
 
 classifier = svm.SVC(kernel='linear',class_weight = 'auto')
-modelName = "TEST-TEST-SVM-Norm-linear-CLauto-Add-JJ-RB-NN-VB"
+modelName = "TEST-TEST-SVM-Norm-linear-CLauto-Add-JJ-RB-NN-VB-SENTENCES"
 directoryName = "SVM"
 description = "8th March 2015 "
 
@@ -24,4 +24,4 @@ description = "8th March 2015 "
 
 
 
-masterPipe.buildModels(classifier, modelName, directoryName, modelOutpath,description, [1,2,3,4],trainFile, testFile)
+masterPipe.buildModels(classifier, modelName, directoryName, modelOutpath,description, [1,2,3,4,5],trainFile, testFile)
