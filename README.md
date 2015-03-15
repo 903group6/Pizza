@@ -8,12 +8,16 @@
     
     Usage: in a command line run "python main.py"
     
-    Requirements:
+Requirements:
+--------------  
 -   scikit learn version 12 or later
 -   nosetests
 -   nltk with latest data packages (see: see http://stackoverflow.com/questions/17672423/http-proxy-authentification-error-for-nltk-download for steps to update path if necessary)  
-    
-    main.py - In this file, you can update the following parameters: 
+
+
+main.py(inputs)
+--------------    
+    In this file, you can update the following parameters: 
 - Training and Test File locations
 - Paths to output for models, evaluations results and kaggle submission file
 - Name of your model
@@ -21,6 +25,8 @@
 - **MOST IMPORTANT: You can choose your classifier** 
 
 
+Outputs
+--------------  
     With these parameters specified, the program will output to the path:
 -   CSV file for submission to Kaggle
 -   Model Evaluation Files for Review
