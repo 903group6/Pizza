@@ -63,4 +63,3 @@ def buildModels(classifier, modelName, directoryName, modelOutpath, description,
     outputFile.close()
     
     print 'File is ready for submission to Kaggle...'
-

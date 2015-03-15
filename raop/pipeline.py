@@ -286,4 +286,3 @@ def modelPipeline(classifier, X_set, Y_set,\
     
     #save final model
     modelObj.saveModel(fullOutPath)
-
