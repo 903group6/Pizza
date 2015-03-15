@@ -7,11 +7,13 @@ import os
 
 
 
-def buildModels(classifier, modelName, directoryName, modelOutpath, description, additionalFeaturesList, trainFile, testFile):
+def buildModels(classifier,modelName,directoryName,modelOutpath,description,\
+                 baseFeatureList,additionalFeaturesList,trainFile,testFile,\
+                 reportPath, submissionsPath):
     #fetch features and requestor results (i.e. X's and Y's), 
     #params = (file, train = 0 test = 1, additonal features to include)
     print 'Extracting Features....'
-    features, pizzas = pipeline.getFeatures(trainFile,0,additionalFeaturesList)
+    features, pizzas = pipeline.getFeatures(trainFile,0,baseFeatureList,additionalFeaturesList)
 
     #normalize the feature set
     from sklearn import preprocessing
@@ -21,7 +23,8 @@ def buildModels(classifier, modelName, directoryName, modelOutpath, description,
 
     #PRODUCE MODEL and EVAL METRICS
     print 'Building Model and Evaluating Results....'
-    pipeline.modelPipeline(classifier, features, pizzas, modelOutpath, modelName, directoryName, description)
+    pipeline.modelPipeline(classifier, features, pizzas, modelOutpath, \
+                            modelName, directoryName, description,reportPath)
 
 
 
@@ -33,7 +36,7 @@ def buildModels(classifier, modelName, directoryName, modelOutpath, description,
 
     #fetch features  (i.e. X's )
     #params = (file, train = 0 test = 1, additonal features to include)
-    features = pipeline.getFeatures(testFile,1,additionalFeaturesList)
+    features = pipeline.getFeatures(testFile,1,baseFeatureList,additionalFeaturesList)
     listofID = []
     testdata = helper.loadJSONfromFile(testFile)
     for item in testdata:
@@ -50,7 +53,7 @@ def buildModels(classifier, modelName, directoryName, modelOutpath, description,
 
 
     #write results and user details to submission file
-    outputFile=open(inputModelFileName + '-KaggleSubmission.csv','w')
+    outputFile=open(submissionsPath + modelName +'-KaggleSubmission.csv','w')
 
     outputFile.write("request_id,requester_received_pizza\n")
     for counter,id in enumerate(listofID):

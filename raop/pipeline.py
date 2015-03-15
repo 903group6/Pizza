@@ -72,7 +72,9 @@ def addPreprocessedKeyVals(inputJSONfile,outputJSONfile):
 
 
 	
-def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
+def getFeatures(inputJSONfile,isTest,\
+                base_features_idxs = None,\
+                xt_features_idxs = None,):
     '''Loads Json(output from step 2) file to list --> creates object for 
        each dictionary in list. Then extract features from each dictionary,
        and keep it in a feature vector.
@@ -89,6 +91,7 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
     for dict in thelist:
         temp_feat = []
         temp_addit_feat =[]
+        base_feat_to_append = []
         addit_feat_to_append = []
         
         #Base features
@@ -135,10 +138,15 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         #temp_feat.append(featObj.narrativeCountFamilyBin)
         
         temp_feat.append(featObj.findReciprocity)
-        temp_feat.append(featObj.wordNum)
-        
+        temp_feat.append(featObj.wordNum)      
         temp_feat.append(featObj.time)
         temp_feat.append(featObj.firstHalf)
+        
+        #based on input additional features list, add in the specified features.  
+        #numbers in list must match the corresponding numbers in additional 
+        #features list above
+        for index in base_features_idxs:
+                base_feat_to_append.append(temp_feat[index-1])        
 
         #Additional Features
         #1 = num adjectives/num words
@@ -161,13 +169,15 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         float(featObj.CountPOSTag(dict["added_POStags"],'VB')) / \
         float(featObj.wordNum))    
         
-        #5 = num of sentences                
-        temp_addit_feat.append(len(dict["added_segmented_sentences"]))
+
+        #5 = num words/sentence               
+        temp_addit_feat.append(float(featObj.wordNum) /\
+                                float(len(dict["added_segmented_sentences"])))
 
         #6 = punctuation
-        punct_regex = re.compile(r"(!)")
+        punct_regex = re.compile(r"(!|\)|\()")
         punct_match = re.findall(punct_regex,dict['request_text_edit_aware'])
-        temp_addit_feat.append(len(punct_match))
+        temp_addit_feat.append(float(len(punct_match))/float(featObj.wordNum))
         
         #7 High likely stems that are true therefore count occurence
         stems_regex = re.compile(r"(supermarket|warn|batteri|fold|insurance|preciou|reasons|bonu|skip|insan|lil|struggling|admit|stapl|anticip|compens|constant|corpor|couldnt|deplet|familiar|interact|overal|pinch|pure|rut|shoulder|reserv|packag)")
@@ -180,16 +190,17 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
         else:
             temp_addit_feat.append(0)       
                
-        #based on input list, add in the specified features.  numbers in list
-        # must match the corresponding numbers in additional features list above
+        #based on input additional features list, add in the specified features.  
+        #numbers in list must match the corresponding numbers in additional 
+        #features list above
         if xt_features_idxs != None:
             for index in xt_features_idxs:
                 addit_feat_to_append.append(temp_addit_feat[index-1])
                     
         #extend the feature vector with specified additional features            
-        temp_feat.extend(addit_feat_to_append)        
+        base_feat_to_append.extend(addit_feat_to_append)        
         #add the feature vector to X set
-        X_set.append(temp_feat)
+        X_set.append(base_feat_to_append)
 
         
         if isTest==0: # If the input json file is not the Kaggle test set
@@ -209,7 +220,8 @@ def getFeatures(inputJSONfile, isTest, xt_features_idxs = None):
 #Step 4 - Generic pipeline component to build model, save model, and output
 #         evaluation metrics
 def modelPipeline(classifier, X_set, Y_set,\
-    modelOutpath, modelName, directoryName, description):
+                    modelOutpath, modelName, directoryName,\
+                     description, reportPath):
     '''
     INPUTS: 
     classifier = any sklearn classifier ex: GaussianNB()
@@ -249,7 +261,8 @@ def modelPipeline(classifier, X_set, Y_set,\
 
 
     #####save report to directory#####
-    reportFile = fullOutPath + '.report'
+    reportFile = reportPath + modelName + '.report'
+    print reportFile
     oFile = open(reportFile,'w')
 
     #report information
