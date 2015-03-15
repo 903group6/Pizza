@@ -10,7 +10,7 @@
     
 Requirements:
 --------------  
--   scikit learn version 12 or later
+-   scikit learn version 0.14.1 or later
 -   nosetests
 -   nltk with latest data packages (see: see http://stackoverflow.com/questions/17672423/http-proxy-authentification-error-for-nltk-download for steps to update path if necessary)  
 
