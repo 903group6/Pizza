@@ -36,3 +36,9 @@ Outputs
     on our system.  
     
     **Note Also: This system and code can be adapted for similar problems**
+    
+    
+Pipeline
+-------------
+    **"import raop pipeline"**  This module contains functions to preprocess data
+    and extract features.  Check out doc strings and code for details.
